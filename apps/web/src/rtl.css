@@ -1,0 +1,103 @@
+/* Fork-only: right-to-left layout rules from upstream PR #16839, kept out of
+   index.css so rebases touch fewer upstream lines. Loaded after index.css. */
+
+/* Right-to-left text. Paragraphs, headings, list items, and table cells
+   carry the dir of their dominant script (lib/textDirection; the composer sets
+   it per line), or dir="auto" when they have no letters. An item wrapping a <p>
+   (composer tasks, loose Markdown lists) may still disagree with it: when that
+   paragraph exists, it decides. Lists take their direction from their first item,
+   quotes from their first block, alerts from their body, and tables from
+   their first header, which moves markers, borders, and columns to the right
+   for Arabic or Hebrew. Each ltr/rtl pair below is mutually exclusive. */
+:is(.chat-markdown, .composer-tiptap)
+  li:is(
+    :has(> p:first-child:dir(rtl), > div > p:first-child:dir(rtl)),
+    :dir(rtl):not(:has(> p:first-child:dir(ltr), > div > p:first-child:dir(ltr)))
+  ) {
+  direction: rtl;
+}
+
+:is(.chat-markdown, .composer-tiptap)
+  li:is(
+    :has(> p:first-child:dir(ltr), > div > p:first-child:dir(ltr)),
+    :dir(ltr):not(:has(> p:first-child:dir(rtl), > div > p:first-child:dir(rtl)))
+  ) {
+  direction: ltr;
+}
+
+:is(.chat-markdown, .composer-tiptap)
+  :is(ul, ol):is(
+    :has(
+      > li:first-child > p:first-child:dir(rtl),
+      > li:first-child > div > p:first-child:dir(rtl)
+    ),
+    :has(> li:first-child:dir(rtl)):not(
+      :has(
+        > li:first-child > p:first-child:dir(ltr),
+        > li:first-child > div > p:first-child:dir(ltr)
+      )
+    )
+  ) {
+  direction: rtl;
+}
+
+:is(.chat-markdown, .composer-tiptap)
+  :is(ul, ol):is(
+    :has(
+      > li:first-child > p:first-child:dir(ltr),
+      > li:first-child > div > p:first-child:dir(ltr)
+    ),
+    :has(> li:first-child:dir(ltr)):not(
+      :has(
+        > li:first-child > p:first-child:dir(rtl),
+        > li:first-child > div > p:first-child:dir(rtl)
+      )
+    )
+  ) {
+  direction: ltr;
+}
+
+:is(.chat-markdown, .composer-tiptap) blockquote:has(> :first-child:dir(rtl)),
+.chat-markdown [role="note"]:has(> :nth-child(2):dir(rtl)),
+.chat-markdown table:has(> thead > tr > th:first-child:dir(rtl)) {
+  direction: rtl;
+}
+
+/* An item in the other direction from its list opens a marker gutter on its
+   own side; composer task lists have no marker gutter to open. */
+:is(.chat-markdown, .composer-tiptap)
+  :is(ul:not([data-type="taskList"]), ol):is(
+    :has(
+      > li:first-child > p:first-child:dir(rtl),
+      > li:first-child > div > p:first-child:dir(rtl)
+    ),
+    :has(> li:first-child:dir(rtl)):not(
+      :has(
+        > li:first-child > p:first-child:dir(ltr),
+        > li:first-child > div > p:first-child:dir(ltr)
+      )
+    )
+  )
+  > li:is(
+    :has(> p:first-child:dir(ltr), > div > p:first-child:dir(ltr)),
+    :dir(ltr):not(:has(> p:first-child:dir(rtl), > div > p:first-child:dir(rtl)))
+  ),
+:is(.chat-markdown, .composer-tiptap)
+  :is(ul:not([data-type="taskList"]), ol):not(
+    :has(
+      > li:first-child > p:first-child:dir(rtl),
+      > li:first-child > div > p:first-child:dir(rtl)
+    ),
+    :has(> li:first-child:dir(rtl)):not(
+      :has(
+        > li:first-child > p:first-child:dir(ltr),
+        > li:first-child > div > p:first-child:dir(ltr)
+      )
+    )
+  )
+  > li:is(
+    :has(> p:first-child:dir(rtl), > div > p:first-child:dir(rtl)),
+    :dir(rtl):not(:has(> p:first-child:dir(ltr), > div > p:first-child:dir(ltr)))
+  ) {
+  margin-inline-start: var(--list-gutter, 1.25rem);
+}

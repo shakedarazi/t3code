@@ -184,6 +184,7 @@ import {
   BrowserSettingsReadError,
 } from "../browser/openFileInPreview";
 import { resolveLinkTarget } from "../browser/browserLinkTarget";
+import { hastBlockDirection } from "../lib/textDirection";
 import { PullRequestLinkPreview } from "./pullRequest/PullRequestLinkPreview";
 import { MarkdownCodeBlock, SuspenseShikiCodeBlock } from "./chat/MarkdownCodeBlock";
 import { MarkdownMermaidCodeBlock } from "./chat/MarkdownMermaidCodeBlock";
@@ -933,12 +934,13 @@ const ChatMarkdownTextContext = React.createContext("");
 function markdownHeadingRenderer(level: 1 | 2 | 3 | 4 | 5 | 6) {
   const Tag = `h${level}` as const;
   return function MarkdownHeading({
-    node: _node,
+    node,
     ...props
   }: ComponentProps<typeof Tag> & ReactMarkdownExtraProps) {
     const { headingLevelOffset } = use(ChatMarkdownRendererContext);
     return (
       <Tag
+        dir={hastBlockDirection(node)}
         {...props}
         aria-level={headingLevelOffset > 0 ? Math.min(level + headingLevelOffset, 6) : undefined}
       />
@@ -964,9 +966,13 @@ const CHAT_MARKDOWN_COMPONENTS = {
     }
     return <div {...props}>{children}</div>;
   },
-  p: function MarkdownParagraph({ node: _node, children, ...props }) {
+  p: function MarkdownParagraph({ node, children, ...props }) {
     const { skills } = use(ChatMarkdownRendererContext);
-    return <p {...props}>{renderSkillInlineMarkdownChildren(children, skills)}</p>;
+    return (
+      <p dir={hastBlockDirection(node)} {...props}>
+        {renderSkillInlineMarkdownChildren(children, skills)}
+      </p>
+    );
   },
   blockquote: function MarkdownBlockquote({ node: _node, children, ...props }) {
     const alert =
@@ -975,7 +981,7 @@ const CHAT_MARKDOWN_COMPONENTS = {
       return <blockquote {...props}>{children}</blockquote>;
     }
     return (
-      <div role="note" className={cn("my-1 border-l-2 pl-3", alert.borderClassName)}>
+      <div role="note" className={cn("my-1 border-s-2 ps-3", alert.borderClassName)}>
         <p
           data-thread-find-ignore="true"
           className={cn("flex items-center gap-1.5 font-medium", alert.titleClassName)}
@@ -1003,7 +1009,11 @@ const CHAT_MARKDOWN_COMPONENTS = {
     // remark-gfm marks task items with this class; plain items carry no offset.
     const isTaskItem = String(props.className ?? "").includes("task-list-item");
     return (
-      <li {...props} data-list-item-offset={isTaskItem ? node?.position?.start.offset : undefined}>
+      <li
+        dir={hastBlockDirection(node)}
+        {...props}
+        data-list-item-offset={isTaskItem ? node?.position?.start.offset : undefined}
+      >
         {renderSkillInlineMarkdownChildren(children, skills)}
       </li>
     );
@@ -1470,6 +1480,13 @@ const CHAT_MARKDOWN_COMPONENTS = {
   },
   table: function MarkdownTableRenderer({ node: _node, ...props }) {
     return <MarkdownTable {...props} />;
+  },
+  // Cells follow their own text; the stylesheet orders columns by the first header.
+  th: function MarkdownTableHeader({ node, ...props }) {
+    return <th dir={hastBlockDirection(node)} {...props} />;
+  },
+  td: function MarkdownTableCell({ node, ...props }) {
+    return <td dir={hastBlockDirection(node)} {...props} />;
   },
   details: function MarkdownDetailsRenderer({ node: _node, children, open: detailsOpen }) {
     return <MarkdownDetails open={detailsOpen}>{children}</MarkdownDetails>;

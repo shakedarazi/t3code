@@ -122,6 +122,7 @@ import { composerCodeBlockHighlight } from "./composerCodeBlockHighlight";
 import { importPastedComposerText } from "./composerInlineTokenPaste";
 import { didComposerSelectionChangeVisibly } from "./composerSelection";
 import type { ComposerDraftContextRecords } from "./composerContextPresentation";
+import { ComposerDirectionExtension } from "./composerTextDirection";
 
 export interface ComposerPromptEditorHandle {
   focus: () => void;
@@ -281,7 +282,7 @@ function ComposerMentionNodeView({ node }: NodeViewProps) {
     </ContextChip>
   );
   return (
-    <NodeViewWrapper as="span" className={CHIP_NODE_SELECTION_CLASS_NAME}>
+    <NodeViewWrapper as="span" dir="auto" className={CHIP_NODE_SELECTION_CLASS_NAME}>
       <Tooltip>
         <TooltipTrigger render={chip} />
         <TooltipPopup side="top">
@@ -352,7 +353,7 @@ function ComposerSkillNodeView({ node }: NodeViewProps) {
     ? formatProviderSkillDisplayName(skill)
     : (node.attrs.skillLabel as string) || skillName;
   return (
-    <NodeViewWrapper as="span" className={CHIP_NODE_SELECTION_CLASS_NAME}>
+    <NodeViewWrapper as="span" dir="auto" className={CHIP_NODE_SELECTION_CLASS_NAME}>
       <ContextChipPopover
         kind="skill"
         icon={<SkillChipIcon />}
@@ -452,6 +453,7 @@ function ComposerCitationNodeView({ node, editor, getPos }: NodeViewProps) {
   return (
     <NodeViewWrapper
       as="span"
+      dir="auto"
       className={cn(CHIP_NODE_SELECTION_CLASS_NAME, "min-w-0 max-w-full")}
       contentEditable={false}
       spellCheck={false}
@@ -525,7 +527,7 @@ const ComposerContextReferenceExtension = Node.create({
 
 function ComposerContextReferenceNodeView({ node }: NodeViewProps) {
   return (
-    <NodeViewWrapper as="span" className={CHIP_NODE_SELECTION_CLASS_NAME}>
+    <NodeViewWrapper as="span" dir="auto" className={CHIP_NODE_SELECTION_CLASS_NAME}>
       <ComposerContextReferenceChip
         kind={(node.attrs.kind as string) ?? ""}
         contextId={(node.attrs.contextId as string) ?? ""}
@@ -857,6 +859,7 @@ function createComposerExtensions(richText: boolean) {
     ComposerCitationExtension,
     ComposerContextReferenceExtension,
     ComposerMarkersExtension,
+    ComposerDirectionExtension,
     ...(richText
       ? [
           ComposerItalicExtension,

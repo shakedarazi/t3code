@@ -329,6 +329,8 @@ export const MarkdownFileLink = memo(function MarkdownFileLink({
             <ContextChip
               kind="mention"
               render={<a href={href} />}
+              // Own dir keeps a chip-led paragraph's direction on its text.
+              dir="auto"
               className={MARKDOWN_FILE_LINK_CLASS_NAME}
               data-markdown-copy={copyMarkdown}
               onClick={(event) => {
@@ -358,6 +360,7 @@ export const MarkdownFileLink = memo(function MarkdownFileLink({
               kind="mention"
               render={<button type="button" />}
               aria-label={`File options for ${label}`}
+              dir="auto"
               aria-haspopup="menu"
               className={cn(MARKDOWN_FILE_LINK_CLASS_NAME, "select-text")}
               data-markdown-copy={copyMarkdown}
