@@ -1,3 +1,9 @@
+> **ה-fork של שקד.** קודם `FORK.md`: מה שונה מ-upstream, איך מעדכנים ובונים, ומה T3 נותן ל-session-tree.
+>
+> **בכל שאלה על מה T3 יודע לעשות:** קודם התיעוד העדכני. `git fetch upstream`, ואז `docs/README.md` ו-`docs/user/`
+> כמו שהם ב-`upstream/main` (`git show upstream/main:docs/README.md`). רק אחריו הקוד. upstream זז מהר, והעותק המקומי
+> יכול להיות ישן.
+
 # T3 Code
 
 T3 Code is a minimal GUI for coding agents. A Node WebSocket server wraps provider CLIs and agents (Codex, Claude Code, Cursor, Grok, OpenCode, Antigravity) and serves web, desktop, and mobile clients.
