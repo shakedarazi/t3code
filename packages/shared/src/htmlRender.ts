@@ -238,6 +238,8 @@ export const HTML_RENDER_LAYOUT_GUIDE = [
 
 const HOST_CONTEXT_CHANGED_METHOD = "ui/notifications/host-context-changed";
 const OPEN_LINK_METHOD = "ui/open-link";
+// fork: a page sends the person's text to the conversation, as an MCP App does (session-tree, the pad board).
+const MESSAGE_METHOD = "ui/message";
 const SIZE_CHANGED_METHOD = "ui/notifications/size-changed";
 // Custom bridge forwards app shortcuts because focused frames otherwise capture them.
 const SHORTCUTS_METHOD = "t3/notifications/shortcuts";
@@ -272,6 +274,32 @@ export function readHtmlRenderLinkRequest(data: unknown):
   return typeof url === "string" && /^https?:\/\//i.test(url)
     ? { id, url, metaKey: metaKey === true, ctrlKey: ctrlKey === true }
     : undefined;
+}
+
+/** fork: `ui/message` from the page, text blocks from the user role only, as MCP Apps send it. */
+export function readHtmlRenderMessageRequest(
+  data: unknown,
+): { readonly id: string | number; readonly text: string } | undefined {
+  if (typeof data !== "object" || data === null) return undefined;
+  const { jsonrpc, id, method, params } = data as Record<string, unknown>;
+  if (jsonrpc !== "2.0" || method !== MESSAGE_METHOD) return undefined;
+  if (typeof id !== "string" && typeof id !== "number") return undefined;
+  if (typeof params !== "object" || params === null) return undefined;
+  const { role, content } = params as Record<string, unknown>;
+  if (role !== "user") return undefined;
+  const blocks = Array.isArray(content) ? content : [content];
+  const texts = blocks.map((b) =>
+    typeof b === "object" && b !== null && (b as { type?: unknown }).type === "text"
+      ? (b as { text?: unknown }).text
+      : undefined,
+  );
+  if (texts.length === 0 || texts.some((t) => typeof t !== "string")) return undefined;
+  const text = (texts as string[]).join("\n").trim();
+  return text === "" ? undefined : { id, text };
+}
+
+export function htmlRenderError(id: string | number, message: string) {
+  return { jsonrpc: "2.0", id, error: { code: -32000, message } } as const;
 }
 
 /** Published local images arrive as `data:image/` URLs. */

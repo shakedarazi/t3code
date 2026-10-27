@@ -16,6 +16,8 @@ import {
   readHtmlRenderImageRequest,
   readHtmlRenderKeyDown,
   readHtmlRenderLinkRequest,
+  readHtmlRenderMessageRequest,
+  htmlRenderError,
 } from "@t3tools/shared/htmlRender";
 import {
   isMacPlatform,
@@ -147,6 +149,8 @@ export function HtmlRenderDocument(props: {
   readonly onContentHeight?: (height: number) => void;
   /** Reports fullscreen changes so virtualized rows can stay mounted. */
   readonly onFullscreenChange?: ((fullscreen: boolean) => void) | undefined;
+  /** fork: where a page's `ui/message` goes, the conversation's composer send; absent, refused. */
+  readonly onSendMessage?: ((text: string) => Promise<void>) | undefined;
 }) {
   const theme = useHtmlRenderTheme();
   const frameRef = useRef<HTMLIFrameElement>(null);
@@ -258,6 +262,21 @@ export function HtmlRenderDocument(props: {
           new KeyboardEvent("keydown", { ...key, bubbles: true, cancelable: true }),
         );
       }
+      return;
+    }
+    // fork: only from a click in the page, as links are; the person pressed the page's own send.
+    const messageRequest = readHtmlRenderMessageRequest(event.data);
+    if (messageRequest !== undefined) {
+      const reply = (m: object) => frame.contentWindow?.postMessage(m, "*");
+      const send = props.onSendMessage;
+      if (send === undefined) {
+        reply(htmlRenderError(messageRequest.id, "Messages are not available here."));
+        return;
+      }
+      send(messageRequest.text).then(
+        () => reply(htmlRenderResult(messageRequest.id)),
+        (cause: unknown) => reply(htmlRenderError(messageRequest.id, String(cause))),
+      );
       return;
     }
     const imageRequest = readHtmlRenderImageRequest(event.data);
