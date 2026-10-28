@@ -65,4 +65,5 @@ fork/build.sh
 - **Settled מבחוץ** (ב-fork): `~/.t3/bin/t3 thread settle <thread>`, אותה פקודה של השרת שה-Settled בסיידבר ו-
   `t3_thread_organize` מפעילים. מדפיס `Settled.`; כישלון: שורה ב-stderr ויציאה 1.
 - **השיחה ש-T3 מציג** (ב-fork): ‏`shownAt` על ה-shell של השיחה, בשעון השרת, בכל הצגה שלה (התראה, סיידבר, קישור),
-  גם של שיחה שכבר נקראה. ה-`shownAt` החדש מכולם הוא השיחה המוצגת. בלי visit tracking אין גם `shownAt`.
+  גם של שיחה שכבר נקראה. ה-`shownAt` החדש מכולם הוא השיחה המוצגת. הצגה לא מזיזה את סימן הקריאה (`lastVisitedAt`): שיחה
+  שלא נקראה נשארת לא נקראה. בלי visit tracking אין גם `shownAt`.

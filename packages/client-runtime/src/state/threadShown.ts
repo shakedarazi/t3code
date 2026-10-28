@@ -46,7 +46,8 @@ export function createThreadShownReporter(options: ThreadShownReporterOptions) {
             options.visit,
             {
               environmentId: shell.environmentId,
-              // The watermark where it is; a thread never visited is read up to now, as the tracker would.
+              // The command needs a time; a show never moves the watermark (the server reads `shown`), so the
+              // watermark where it is, or the last update of a thread never visited, which stays unread.
               input: {
                 threadId: shell.id,
                 visitedAt: shell.lastVisitedAt ?? shell.updatedAt,
