@@ -5760,6 +5760,62 @@ it.layer(Layer.fresh(layerSharedApplicationDataPlaneTest))("thread opens", (it) 
   );
 });
 
+// Fork (session-tree): the thread a client shows is on its shell, so the cursor of a session tree follows T3.
+it.layer(Layer.fresh(layerSharedApplicationDataPlaneTest))("thread shows", (it) => {
+  it.effect(
+    "stamps shownAt on the server clock at every show, a read thread's too, and nothing else",
+    () =>
+      Effect.gen(function* () {
+        const orchestrator = yield* Orchestrator.OrchestratorV2;
+        const threadId = ThreadId.make("runtime-layer-shown-thread");
+        yield* orchestrator.dispatch({
+          type: "thread.create",
+          createdBy: "user",
+          creationSource: "web",
+          commandId: CommandId.make("runtime-layer-shown-thread-create"),
+          threadId,
+          projectId: ProjectId.make("runtime-layer-shown-project"),
+          title: "Shown thread",
+          modelSelection,
+          runtimeMode: "full-access",
+          interactionMode: "default",
+          branch: null,
+          worktreePath: null,
+        });
+        const visitedAt = "2026-07-24T01:00:00.000Z";
+        let visits = 0;
+        const visit = (shown: boolean) =>
+          orchestrator.dispatch({
+            type: "thread.visit",
+            commandId: CommandId.make(`runtime-layer-shown-visit-${++visits}`),
+            threadId,
+            visitedAt,
+            ...(shown ? { shown: true } : {}),
+          });
+        const shell = Effect.map(orchestrator.getShellSnapshot(), (snapshot) =>
+          snapshot.threads.find((thread) => thread.id === threadId),
+        );
+
+        yield* visit(false);
+        assert.isNull((yield* shell)!.shownAt ?? null);
+
+        yield* TestClock.adjust("1 minute");
+        yield* visit(true);
+        const first = yield* shell;
+        assert.deepEqual(first!.shownAt, yield* DateTime.now);
+        assert.equal(DateTime.formatIso(first!.lastVisitedAt!), visitedAt);
+
+        // Shown again with nothing new in it: the watermark stays, the show moves.
+        yield* TestClock.adjust("1 minute");
+        yield* visit(true);
+        const again = yield* shell;
+        assert.deepEqual(again!.shownAt, yield* DateTime.now);
+        assert.equal(DateTime.formatIso(again!.lastVisitedAt!), visitedAt);
+        assert.deepEqual(again!.updatedAt, first!.updatedAt);
+      }),
+  );
+});
+
 it.layer(Layer.fresh(layerSharedApplicationDataPlaneTest))("compact PR events", (it) => {
   it.effect("persists only the changed PR link and replays it without losing other links", () =>
     Effect.gen(function* () {

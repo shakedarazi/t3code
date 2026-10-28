@@ -118,6 +118,8 @@ export interface VisitThreadInput extends ThreadCommandInput {
   /** Counts toward search frecency; `searchQuery` is the palette query that picked it. */
   readonly opened?: boolean;
   readonly searchQuery?: string;
+  /** Fork (session-tree): a client shows the thread now; the server stamps shownAt. */
+  readonly shown?: boolean;
 }
 
 export type MarkThreadUnreadInput = ThreadCommandInput;
@@ -584,6 +586,7 @@ export const visitThread = Effect.fn("EnvironmentCommands.visitThread")(function
     visitedAt: input.visitedAt,
     ...(input.opened ? { opened: true } : {}),
     ...(input.searchQuery ? { searchQuery: input.searchQuery } : {}),
+    ...(input.shown ? { shown: true } : {}),
   });
 });
 

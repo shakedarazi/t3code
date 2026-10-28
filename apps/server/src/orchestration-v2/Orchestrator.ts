@@ -2649,6 +2649,8 @@ const makeOrchestrator = Effect.fn("orchestrationV2.Orchestrator.layer")(functio
         ...thread,
         ...(movesForward ? { lastVisitedAt: visitedAt.value } : {}),
         ...(opens ? { opens } : {}),
+        // Fork (session-tree): the thread a client shows, on the server clock.
+        ...(command.shown ? { shownAt: occurredAt } : {}),
       },
     });
   });
