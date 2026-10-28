@@ -72,7 +72,7 @@ it("tells the server each time the thread is shown, a read one too, without movi
   expect(t.visits[1]).toEqual({ threadId: t.ref.threadId, visitedAt: at(10), shown: true });
 });
 
-it("waits for the shell, and a never-visited thread is visited up to its last update", () => {
+it("waits for the shell; a never-visited thread is shown with its last update, which the server does not take as a visit", () => {
   const t = setup(null);
   t.show();
   expect(t.visits).toEqual([]);

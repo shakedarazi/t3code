@@ -2887,7 +2887,8 @@ export const OrchestrationV2Command = Schema.Union([
     // Older servers ignore both fields and only move the read watermark.
     opened: Schema.optional(Schema.Boolean),
     searchQuery: Schema.optional(Schema.String.check(Schema.isMaxLength(200))),
-    // Fork (session-tree): a client shows the thread now, however it got there; stamps shownAt.
+    // Fork (session-tree): a client shows the thread now, however it got there; stamps shownAt and leaves the
+    // read watermark where it is (visitedAt is not taken).
     shown: Schema.optional(Schema.Boolean),
   }),
   Schema.Struct({

@@ -5814,6 +5814,54 @@ it.layer(Layer.fresh(layerSharedApplicationDataPlaneTest))("thread shows", (it) 
         assert.deepEqual(again!.updatedAt, first!.updatedAt);
       }),
   );
+
+  it.effect("a show never moves the read watermark: a never-visited thread stays unread", () =>
+    Effect.gen(function* () {
+      const orchestrator = yield* Orchestrator.OrchestratorV2;
+      const threadId = ThreadId.make("runtime-layer-shown-unread-thread");
+      yield* orchestrator.dispatch({
+        type: "thread.create",
+        createdBy: "user",
+        creationSource: "web",
+        commandId: CommandId.make("runtime-layer-shown-unread-create"),
+        threadId,
+        projectId: ProjectId.make("runtime-layer-shown-project"),
+        title: "Shown, never visited",
+        modelSelection,
+        runtimeMode: "full-access",
+        interactionMode: "default",
+        branch: null,
+        worktreePath: null,
+      });
+      const shell = Effect.map(orchestrator.getShellSnapshot(), (snapshot) =>
+        snapshot.threads.find((thread) => thread.id === threadId),
+      );
+      const show = (n: number, visitedAt: string) =>
+        orchestrator.dispatch({
+          type: "thread.visit",
+          commandId: CommandId.make(`runtime-layer-shown-unread-visit-${n}`),
+          threadId,
+          visitedAt,
+          shown: true,
+        });
+
+      yield* TestClock.adjust("1 minute");
+      yield* show(1, "2026-07-24T02:00:00.000Z");
+      const shown = yield* shell;
+      assert.deepEqual(shown!.shownAt, yield* DateTime.now);
+      assert.isNull(shown!.lastVisitedAt ?? null);
+
+      // A visit sets the watermark; a later show with a later time does not move it.
+      yield* orchestrator.dispatch({
+        type: "thread.visit",
+        commandId: CommandId.make("runtime-layer-shown-unread-visit-3"),
+        threadId,
+        visitedAt: "2026-07-24T03:00:00.000Z",
+      });
+      yield* show(4, "2026-07-24T04:00:00.000Z");
+      assert.equal(DateTime.formatIso((yield* shell)!.lastVisitedAt!), "2026-07-24T03:00:00.000Z");
+    }),
+  );
 });
 
 it.layer(Layer.fresh(layerSharedApplicationDataPlaneTest))("compact PR events", (it) => {
