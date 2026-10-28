@@ -2,7 +2,7 @@ import { assert, it } from "@effect/vitest";
 import { RunId, ThreadId } from "@t3tools/contracts";
 import * as Effect from "effect/Effect";
 
-import { type ThreadTools, waitForRun } from "./thread.ts";
+import { settleThread, type ThreadTools, waitForRun } from "./thread.ts";
 
 const threadId = ThreadId.make("thread-1");
 const runId = RunId.make("run-1");
@@ -72,4 +72,19 @@ it.effect("--wait reports its run's result when a later run is the one waiting",
       status: "completed",
     });
   }),
+);
+
+it.effect(
+  "settle dispatches the server's settle for the thread, as the sidebar's Settled does",
+  () =>
+    Effect.gen(function* () {
+      const { tools, calls } = scriptedTools({ t3_thread_organize: [{ sequence: 42 }] });
+
+      const settled = yield* settleThread(tools, threadId);
+
+      assert.deepStrictEqual(settled, { sequence: 42 });
+      assert.deepStrictEqual(calls, [
+        { tool: "t3_thread_organize", args: { threadId, action: "settle" } },
+      ]);
+    }),
 );

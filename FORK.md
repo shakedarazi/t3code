@@ -60,3 +60,5 @@ fork/build.sh
   מיזוג של PR סוגר את השיחה (`ThreadSettlementService.ts`).
 - **שיחה שסוכן פותח** (`create_threads` ב-MCP של T3) נרשמת עם השיחה שפתחה אותה, ו-session-tree שם אותה כילד שלה.
 - **המצב על הדיסק:** `~/.t3/userdata/statev2.sqlite`. לקריאה בלבד מבחוץ.
+- **Settled מבחוץ** (ב-fork): `~/.t3/bin/t3 thread settle <thread>`, אותה פקודה של השרת שה-Settled בסיידבר ו-
+  `t3_thread_organize` מפעילים. מדפיס `Settled.`; כישלון: שורה ב-stderr ויציאה 1.
