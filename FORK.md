@@ -7,11 +7,12 @@ fork אישי של [T3 Code](https://github.com/pingdotgg/t3code). המטרה: �
 - `main` — מראה של `upstream/main`. לא עורכים בו.
 - `shaked` — `main` ועוד ערימה קטנה של קומיטים עצמאיים:
 
-| קומיט    | מה                                                                                             | מתי להוריד                   |
-| -------- | ---------------------------------------------------------------------------------------------- | ---------------------------- |
-| `build:` | `fork/build.sh` — בנייה מקומית של DMG ל-arm64.                                                 | לא.                          |
-| `fork:`  | `fork/update.sh`, הקובץ הזה, ושורה בראש `AGENTS.md`.                                           | לא.                          |
-| `fork:`  | `t3 thread settle <thread>` ב-`apps/server/src/cli/thread.ts` — Settled מבחוץ, ל-session-tree. | כש-upstream יוסיף פקודה כזו. |
+| קומיט    | מה                                                                                                    | מתי להוריד                         |
+| -------- | ----------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| `build:` | `fork/build.sh` — בנייה מקומית של DMG ל-arm64.                                                        | לא.                                |
+| `fork:`  | `fork/update.sh`, הקובץ הזה, ושורה בראש `AGENTS.md`.                                                  | לא.                                |
+| `fork:`  | `t3 thread settle <thread>` ב-`apps/server/src/cli/thread.ts` — Settled מבחוץ, ל-session-tree.        | כש-upstream יוסיף פקודה כזו.       |
+| `fork:`  | `shownAt` על השיחה: כל הצגה של שיחה (`threadShown.ts`) היא `thread.visit` עם `shown`, ל-session-tree. | כש-upstream יפלוט את השיחה המוצגת. |
 
 הקבצים של ה-fork עצמו יושבים ב-`fork/` וב-`FORK.md`, נתיבים ש-upstream לא נוגע בהם.
 
@@ -63,3 +64,5 @@ fork/build.sh
 - **המצב על הדיסק:** `~/.t3/userdata/statev2.sqlite`. לקריאה בלבד מבחוץ.
 - **Settled מבחוץ** (ב-fork): `~/.t3/bin/t3 thread settle <thread>`, אותה פקודה של השרת שה-Settled בסיידבר ו-
   `t3_thread_organize` מפעילים. מדפיס `Settled.`; כישלון: שורה ב-stderr ויציאה 1.
+- **השיחה ש-T3 מציג** (ב-fork): ‏`shownAt` על ה-shell של השיחה, בשעון השרת, בכל הצגה שלה (התראה, סיידבר, קישור),
+  גם של שיחה שכבר נקראה. ה-`shownAt` החדש מכולם הוא השיחה המוצגת. בלי visit tracking אין גם `shownAt`.
