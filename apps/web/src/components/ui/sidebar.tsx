@@ -192,6 +192,11 @@ function SidebarProvider({
   };
 
   const state = resolveSidebarState({ isMobile, open, openMobile });
+  // fork: what the person sees, to the desktop app on every change, for session-tree's panel.
+  const visible = isMobile ? openMobile : open;
+  React.useEffect(() => {
+    void window.desktopBridge?.sidebar?.setOpen(visible).catch(() => undefined);
+  }, [visible]);
 
   const contextValue: SidebarContextProps = {
     isMobile,

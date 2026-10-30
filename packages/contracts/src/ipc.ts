@@ -1113,6 +1113,10 @@ export interface DesktopBridge {
     install: () => Promise<DesktopCliCommandState>;
     uninstall: () => Promise<DesktopCliCommandState>;
   };
+  /** fork: the sidebar's open state, for session-tree's panel. */
+  sidebar?: {
+    setOpen: (open: boolean) => Promise<void>;
+  };
   webLinks?: {
     setReady: (ready: boolean) => Promise<void>;
     onOpen: (listener: (url: string) => void) => () => void;

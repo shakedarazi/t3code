@@ -286,6 +286,9 @@ contextBridge.exposeInMainWorld("desktopBridge", {
       ipcRenderer.removeListener(IpcChannels.UPDATE_STATE_CHANNEL, wrappedListener);
     };
   },
+  sidebar: {
+    setOpen: (open) => ipcRenderer.invoke(IpcChannels.SIDEBAR_OPEN_CHANNEL, open),
+  },
   webLinks: {
     setReady: (ready) => ipcRenderer.invoke(IpcChannels.WEB_LINK_READY_CHANNEL, ready),
     onOpen: (listener) => {
