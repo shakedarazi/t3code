@@ -1,10 +1,11 @@
 import { Dialog as DialogPrimitive } from "@base-ui/react/dialog";
 import { XIcon } from "lucide-react";
-import { useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import { useCloseAppModal } from "./sidebar/mainAppLocation";
 import { Button } from "./ui/button";
 import { DialogBackdrop } from "./ui/dialog";
+import { useSidebar } from "./ui/sidebar";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "./ui/tooltip";
 
 /**
@@ -20,6 +21,15 @@ export function AppRouteModal({ label, children }: { label: string; children: Re
   // Focus the surface, not its first control: no stray focus ring, no phone keyboard.
   // On close, leave focus alone; returning it to the opener paints a focus ring.
   const popupRef = useRef<HTMLDivElement>(null);
+  // fork: the sidebar closes while the modal is open, and opens again after it if it was open (Shaked, 2026-10-30).
+  const { open: sidebarOpen, setOpen: setSidebarOpen } = useSidebar();
+  const sidebarWasOpenRef = useRef(sidebarOpen);
+  useEffect(() => {
+    if (sidebarWasOpenRef.current) setSidebarOpen(false);
+    return () => {
+      if (sidebarWasOpenRef.current) setSidebarOpen(true);
+    };
+  }, []);
 
   return (
     <DialogPrimitive.Root
