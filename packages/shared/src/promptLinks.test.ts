@@ -3,6 +3,7 @@ import { describe, expect, it } from "vite-plus/test";
 import {
   buildNewThreadLink,
   parseNewThreadLink,
+  parseProjectThreadLink,
   parseThreadLinkPrompt,
   promptLinkAppPath,
   sanitizeLinkedPrompt,
@@ -114,5 +115,14 @@ describe("link round trips", () => {
     expect(promptLinkAppPath("https://app.t3.codes/settings/general")).toBeNull();
     expect(promptLinkAppPath("https://evil.test/new?prompt=hi")).toBeNull();
     expect(promptLinkAppPath("t3code://app/index.html")).toBeNull();
+  });
+});
+
+describe("parseProjectThreadLink", () => {
+  it("reads the project a new thread opens in, and nothing else", () => {
+    expect(parseProjectThreadLink("?project=p-1")).toBe("p-1");
+    expect(promptLinkAppPath("t3code://new?project=p-1")).toBe("/new?project=p-1");
+    expect(parseProjectThreadLink("?project=")).toBeNull();
+    expect(parseProjectThreadLink("?prompt=x")).toBeNull();
   });
 });

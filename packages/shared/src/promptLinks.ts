@@ -153,6 +153,15 @@ export function parseNewThreadLink(search: string): PromptLinkResult<NewThreadLi
   };
 }
 
+/**
+ * fork: `t3code://new?project=<id>` opens a new thread in that project, empty, for the person to write in. For
+ * session-tree, whose panel opens a project with no thread yet. null: not such a link.
+ */
+export function parseProjectThreadLink(search: string): string | null {
+  const project = new URLSearchParams(search).get("project")?.trim();
+  return project ? project : null;
+}
+
 export function parseThreadLinkPrompt(search: string): PromptLinkResult<LinkedPrompt | null> {
   return readPrompt(new URLSearchParams(search));
 }
