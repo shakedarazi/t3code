@@ -408,8 +408,17 @@ export function AppSidebarLayout({ children }: { children: ReactNode }) {
       ? { "--workspace-controls-left": MACOS_TRAFFIC_LIGHTS_LEFT_INSET }
       : {}
   ) as CSSProperties;
+  const shownSidebarWidth = clampThreadSidebarWidth(
+    sidebarWidth,
+    sidebarMinimumWidth,
+    sidebarMaximumWidth,
+  );
+  // fork: the width once it settles (a drag's end, a reset, a narrower window), for session-tree's panel.
+  useEffect(() => {
+    void window.desktopBridge?.sidebar?.setWidth?.(shownSidebarWidth).catch(() => undefined);
+  }, [shownSidebarWidth]);
   const sidebarProviderStyle = {
-    "--sidebar-width": `${clampThreadSidebarWidth(sidebarWidth, sidebarMinimumWidth, sidebarMaximumWidth)}px`,
+    "--sidebar-width": `${shownSidebarWidth}px`,
     "--panel-animation-duration": `${panelAnimationDurationMs}ms`,
     ...windowControlsInsetStyle,
   } as CSSProperties;

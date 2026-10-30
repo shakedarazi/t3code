@@ -288,6 +288,7 @@ contextBridge.exposeInMainWorld("desktopBridge", {
   },
   sidebar: {
     setOpen: (open) => ipcRenderer.invoke(IpcChannels.SIDEBAR_OPEN_CHANNEL, open),
+    setWidth: (width) => ipcRenderer.invoke(IpcChannels.SIDEBAR_WIDTH_CHANNEL, width),
   },
   webLinks: {
     setReady: (ready) => ipcRenderer.invoke(IpcChannels.WEB_LINK_READY_CHANNEL, ready),

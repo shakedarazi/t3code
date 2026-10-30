@@ -15,6 +15,8 @@ export const WEB_LINK_OPEN_CHANNEL = "desktop:web-link-open";
 export const WEB_LINK_READY_CHANNEL = "desktop:web-link-ready";
 // fork: the sidebar's open state, for session-tree's panel.
 export const SIDEBAR_OPEN_CHANNEL = "desktop:sidebar-open";
+// fork: the sidebar's width, for session-tree's panel.
+export const SIDEBAR_WIDTH_CHANNEL = "desktop:sidebar-width";
 export const QUIT_SHORTCUT_CHANNEL = "desktop:quit-shortcut";
 export const TRACKPAD_SCROLL_END_CHANNEL = "desktop:trackpad-scroll-end";
 export const GET_WINDOW_FULLSCREEN_STATE_CHANNEL = "desktop:get-window-fullscreen-state";

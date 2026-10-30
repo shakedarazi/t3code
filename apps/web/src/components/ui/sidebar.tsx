@@ -485,6 +485,8 @@ function SidebarRail({
         if (accepted) {
           setTargetWidth(nextWidth);
           width = nextWidth;
+          // fork: every step of the drag, so session-tree's panel moves with it.
+          void window.desktopBridge?.sidebar?.setWidth?.(width).catch(() => undefined);
         }
         return width;
       },
