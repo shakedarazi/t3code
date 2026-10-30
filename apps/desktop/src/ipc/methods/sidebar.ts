@@ -24,3 +24,21 @@ export const setOpen = DesktopIpc.makeIpcMethod({
       .pipe(Effect.ignore);
   }),
 });
+
+/**
+ * fork: the sidebar's width in CSS pixels, written to `<state dir>/sidebar-width` at every step of a drag and whenever
+ * it settles, for session-tree's panel, which keeps the same width. A write that fails is dropped: the next one writes.
+ */
+export const setWidth = DesktopIpc.makeIpcMethod({
+  channel: IpcChannels.SIDEBAR_WIDTH_CHANNEL,
+  payload: Schema.Finite,
+  result: Schema.Void,
+  handler: Effect.fn("desktop.ipc.sidebar.setWidth")(function* (width) {
+    const environment = yield* DesktopEnvironment.DesktopEnvironment;
+    const fileSystem = yield* FileSystem.FileSystem;
+    const path = yield* Path.Path;
+    yield* fileSystem
+      .writeFileString(path.join(environment.stateDir, "sidebar-width"), String(Math.round(width)))
+      .pipe(Effect.ignore);
+  }),
+});

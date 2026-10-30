@@ -7,15 +7,15 @@ fork אישי של [T3 Code](https://github.com/pingdotgg/t3code). המטרה: �
 - `main` — מראה של `upstream/main`. לא עורכים בו.
 - `shaked` — `main` ועוד ערימה קטנה של קומיטים עצמאיים:
 
-| קומיט    | מה                                                                                                                          | מתי להוריד                            |
-| -------- | --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- |
-| `build:` | `fork/build.sh` — בנייה מקומית של DMG ל-arm64.                                                                              | לא.                                   |
-| `fork:`  | `fork/update.sh`, הקובץ הזה, ושורה בראש `AGENTS.md`.                                                                        | לא.                                   |
-| `fork:`  | `t3 thread settle <thread>` ב-`apps/server/src/cli/thread.ts` — Settled מבחוץ, ל-session-tree.                              | כש-upstream יוסיף פקודה כזו.          |
-| `fork:`  | `shownAt` על השיחה: כל הצגה של שיחה (`threadShown.ts`) היא `thread.visit` עם `shown`, ל-session-tree.                       | כש-upstream יפלוט את השיחה המוצגת.    |
-| `fork:`  | `t3code://new?project=<id>`: שיחה חדשה וריקה בפרויקט (`_chat.new.tsx`), לחלונית של session-tree.                            | כש-upstream יפתח שיחה בפרויקט מקישור. |
-| `fork:`  | Settings (`AppRouteModal.tsx`) סוגר את הסיידבר כשהוא נפתח, ופותח אותו שוב כשהוא נסגר.                                       | לא.                                   |
-| `fork:`  | מצב הסיידבר נכתב ל-`userdata/sidebar-open` בכל שינוי (`ipc/methods/sidebar.ts`, `ui/sidebar.tsx`), לחלונית של session-tree. | כש-upstream יפלוט את מצב הסיידבר.     |
+| קומיט    | מה                                                                                                                                                                                  | מתי להוריד                            |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- |
+| `build:` | `fork/build.sh` — בנייה מקומית של DMG ל-arm64.                                                                                                                                      | לא.                                   |
+| `fork:`  | `fork/update.sh`, הקובץ הזה, ושורה בראש `AGENTS.md`.                                                                                                                                | לא.                                   |
+| `fork:`  | `t3 thread settle <thread>` ב-`apps/server/src/cli/thread.ts` — Settled מבחוץ, ל-session-tree.                                                                                      | כש-upstream יוסיף פקודה כזו.          |
+| `fork:`  | `shownAt` על השיחה: כל הצגה של שיחה (`threadShown.ts`) היא `thread.visit` עם `shown`, ל-session-tree.                                                                               | כש-upstream יפלוט את השיחה המוצגת.    |
+| `fork:`  | `t3code://new?project=<id>`: שיחה חדשה וריקה בפרויקט (`_chat.new.tsx`), לחלונית של session-tree.                                                                                    | כש-upstream יפתח שיחה בפרויקט מקישור. |
+| `fork:`  | Settings (`AppRouteModal.tsx`) סוגר את הסיידבר כשהוא נפתח, ופותח אותו שוב כשהוא נסגר.                                                                                               | לא.                                   |
+| `fork:`  | מצב הסיידבר נכתב ל-`userdata/sidebar-open` בכל שינוי, והרוחב שלו ל-`userdata/sidebar-width` בכל צעד של גרירה (`ipc/methods/sidebar.ts`, `ui/sidebar.tsx`), לחלונית של session-tree. | כש-upstream יפלוט את מצב הסיידבר.     |
 
 הקבצים של ה-fork עצמו יושבים ב-`fork/` וב-`FORK.md`, נתיבים ש-upstream לא נוגע בהם.
 
