@@ -59,6 +59,7 @@ import {
   type ReactNode,
 } from "react";
 
+import { SidebarThreadTreeMark, treeTitleInset } from "./SidebarThreadTreeMark";
 import { useRightPanelStore } from "../../rightPanelStore";
 import { useOpenPrLink } from "../../lib/openPullRequestLink";
 import { useUiStateStore } from "../../uiStateStore";
@@ -537,6 +538,7 @@ type SidebarThreadRowProps = {
   // "folder" is a one-line row inside a boring sidebar project folder;
   // "folder-multiline" adds the card's branch and PR line under it.
   variant: "card" | "slim" | "folder" | "folder-multiline";
+  treePlace?: { depth: number; lastChild: boolean } | undefined;
   navigationParent?: string | undefined;
   variantAction: SidebarSweepAction;
   settlementSupported: boolean;
@@ -1222,8 +1224,13 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: SidebarThreadRowP
                     ? "flex flex-col justify-center px-2.5 py-1.5"
                     : "flex h-9 items-center gap-2.5 px-2.5",
                   // Lines titles up with the folder name, past its chevron and icon.
-                  inFolder && "ps-9",
+                  inFolder && !props.treePlace && "ps-9",
                 )}
+                style={
+                  inFolder && props.treePlace
+                    ? { paddingInlineStart: treeTitleInset(props.treePlace.depth) }
+                    : undefined
+                }
                 onClick={handleClick}
                 onDoubleClick={handleDoubleClick}
                 onKeyDown={handleKeyDown}
@@ -1231,6 +1238,9 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: SidebarThreadRowP
               />
             }
           >
+            {inFolder && props.treePlace ? (
+              <SidebarThreadTreeMark {...props.treePlace} status={status} />
+            ) : null}
             {/* `contents` keeps one-line rows a single flex row. */}
             <div className={multiline ? "flex h-6 min-w-0 items-center gap-2.5" : "contents"}>
               {accessibleTitle}
