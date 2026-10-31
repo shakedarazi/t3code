@@ -544,6 +544,14 @@ it.effect("records the launching thread as the parent, leaving the relationship 
       launchInput({ command: "command:parent:b", thread: "thread:parent:b", message: "go" }),
     );
     const agentLineage = (yield* threads.getThreadProjection(byAgent.threadId)).thread.lineage;
+    const silent = yield* launches.launch({
+      ...launchInput({ command: "command:parent:c", thread: "thread:parent:c" }),
+      launchedFrom: sender,
+    });
+    assert.equal(
+      (yield* threads.getThreadProjection(silent.threadId)).thread.lineage.parentThreadId,
+      sender,
+    );
     const personLineage = (yield* threads.getThreadProjection(byPerson.threadId)).thread.lineage;
     assert.deepEqual(
       [agentLineage.parentThreadId, agentLineage.relationshipToParent],
