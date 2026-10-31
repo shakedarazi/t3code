@@ -47,10 +47,12 @@ function setShell(ref: ScopedThreadRef, updatedAt: string) {
   });
 }
 
+// A `shown` visit is the fork's report of a show; it never moves the watermark this test follows.
 function visitedThreadIds() {
-  return mocks.visitRun.mock.calls.map(
-    ([, input]) => (input as { input: { threadId: string } }).input.threadId,
-  );
+  return mocks.visitRun.mock.calls
+    .map(([, input]) => (input as { input: { threadId: string; shown?: boolean } }).input)
+    .filter((input) => input.shown !== true)
+    .map((input) => input.threadId);
 }
 
 it("records the visit of the next thread at once after switching threads", async () => {

@@ -14,6 +14,8 @@ fork אישי של [T3 Code](https://github.com/pingdotgg/t3code). המטרה: �
 | `fork:`  | `t3 thread settle <thread>` ב-`apps/server/src/cli/thread.ts` — Settled מבחוץ, ל-session-tree.        | כש-upstream יוסיף פקודה כזו.       |
 | `fork:`  | `shownAt` על השיחה: כל הצגה של שיחה (`threadShown.ts`) היא `thread.visit` עם `shown`, ל-session-tree. | כש-upstream יפלוט את השיחה המוצגת. |
 
+ארבעת הקומיטים שהיו בשביל החלונית של session-tree (Settings סוגר את הסיידבר, מצב הסיידבר ורוחבו, `t3code://new?project=`) הוסרו; הם שמורים בתג `panel-patches-archive`.
+
 הקבצים של ה-fork עצמו יושבים ב-`fork/` וב-`FORK.md`, נתיבים ש-upstream לא נוגע בהם.
 
 ## עדכון מ-upstream
