@@ -7,12 +7,13 @@ fork אישי של [T3 Code](https://github.com/pingdotgg/t3code). המטרה: �
 - `main` — מראה של `upstream/main`. לא עורכים בו.
 - `shaked` — `main` ועוד ערימה קטנה של קומיטים עצמאיים:
 
-| קומיט    | מה                                                                                                    | מתי להוריד                         |
-| -------- | ----------------------------------------------------------------------------------------------------- | ---------------------------------- |
-| `build:` | `fork/build.sh` — בנייה מקומית של DMG ל-arm64.                                                        | לא.                                |
-| `fork:`  | `fork/update.sh`, הקובץ הזה, ושורה בראש `AGENTS.md`.                                                  | לא.                                |
-| `fork:`  | `t3 thread settle <thread>` ב-`apps/server/src/cli/thread.ts` — Settled מבחוץ, ל-session-tree.        | כש-upstream יוסיף פקודה כזו.       |
-| `fork:`  | `shownAt` על השיחה: כל הצגה של שיחה (`threadShown.ts`) היא `thread.visit` עם `shown`, ל-session-tree. | כש-upstream יפלוט את השיחה המוצגת. |
+| קומיט    | מה                                                                                                                                                                                                                            | מתי להוריד                                   |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| `build:` | `fork/build.sh` — בנייה מקומית של DMG ל-arm64.                                                                                                                                                                                | לא.                                          |
+| `fork:`  | `fork/update.sh`, הקובץ הזה, ושורה בראש `AGENTS.md`.                                                                                                                                                                          | לא.                                          |
+| `fork:`  | `t3 thread settle <thread>` ב-`apps/server/src/cli/thread.ts` — Settled מבחוץ, ל-session-tree.                                                                                                                                | כש-upstream יוסיף פקודה כזו.                 |
+| `fork:`  | `shownAt` על השיחה: כל הצגה של שיחה (`threadShown.ts`) היא `thread.visit` עם `shown`, ל-session-tree.                                                                                                                         | כש-upstream יפלוט את השיחה המוצגת.           |
+| `fork:`  | שיחה שסוכן פותח (`t3_thread_launch`, `create_threads`) נרשמת עם השיחה שפתחה אותה ב-`lineage.parentThreadId` (`launchedFrom` ב-`thread.create`; `ThreadLaunchService.ts`, `Orchestrator.ts`), `relationshipToParent` נשאר ריק. | כש-upstream ירשום אבא לשיחה שנפתחה ב-launch. |
 
 ארבעת הקומיטים שהיו בשביל החלונית של session-tree (Settings סוגר את הסיידבר, מצב הסיידבר ורוחבו, `t3code://new?project=`) הוסרו; הם שמורים בתג `panel-patches-archive`.
 
