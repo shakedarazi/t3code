@@ -37,7 +37,7 @@ if ! $checks_only; then
       if [[ -n $(git diff --name-only --diff-filter=U) ]]; then
         echo >&2
         echo "conflict rerere could not resolve:" >&2
-        git diff --name-only --diff-filter=U >&2
+        git --no-pager diff --name-only --diff-filter=U >&2
         echo >&2
         echo "resolve, 'git add', then 'git rebase --continue' and run fork/update.sh --checks-only" >&2
         echo "or give up: git rebase --abort (shaked stays at shaked-before-update)" >&2
@@ -54,7 +54,7 @@ if ! $checks_only; then
   fi
 fi
 
-git log --oneline upstream/main.."$branch"
+git --no-pager log --oneline upstream/main.."$branch"
 
 pnpm install --frozen-lockfile
 pnpm exec vp run --filter @t3tools/web typecheck
