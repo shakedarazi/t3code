@@ -1,11 +1,6 @@
 import type { SidebarThreadSummary } from "../../types";
-import type { SidebarThreadStatus } from "../Sidebar.logic";
 
-export interface ThreadTreePlace {
-  readonly thread: SidebarThreadSummary;
-  readonly depth: number;
-  readonly lastChild: boolean;
-}
+export const TREE_INDENT_PX = 12;
 
 type TreeThread = Pick<SidebarThreadSummary, "id" | "environmentId" | "lineage">;
 
@@ -47,24 +42,4 @@ export function orderThreadsAsTree<T extends TreeThread>(
     if (!seen.has(keyOf(thread))) out.push({ thread, depth: 0, lastChild: true });
   }
   return out;
-}
-
-/** The ring around a thread's dot, as session-tree's map colours it; null draws none. */
-export function treeRingTone(
-  status: SidebarThreadStatus,
-): "working" | "turn" | "blocked" | "ready" | null {
-  switch (status) {
-    case "working":
-      return "working";
-    case "waiting":
-      return "turn";
-    case "approval":
-    case "input":
-    case "request":
-      return "blocked";
-    case "ready":
-      return "ready";
-    default:
-      return null;
-  }
 }

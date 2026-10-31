@@ -948,6 +948,9 @@ const make = Effect.gen(function* () {
                 ...(input.delegatedFrom === undefined
                   ? {}
                   : { delegatedFrom: input.delegatedFrom }),
+                ...(input.initialMessage?.senderThreadId === undefined
+                  ? {}
+                  : { launchedFrom: input.initialMessage.senderThreadId }),
                 createdBy: input.createdBy,
                 creationSource: input.creationSource,
               });

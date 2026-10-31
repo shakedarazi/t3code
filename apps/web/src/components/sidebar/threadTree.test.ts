@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vite-plus/test";
 
-import { orderThreadsAsTree, treeRingTone } from "./threadTree";
+import { orderThreadsAsTree } from "./threadTree";
 
 const t = (id: string, parentThreadId: string | null) =>
   ({ id, environmentId: "e", lineage: { parentThreadId } }) as never as Parameters<
@@ -28,10 +28,5 @@ describe("orderThreadsAsTree", () => {
       "y:0",
     ]);
     expect(placed.find((p) => p.thread.id === "c1")?.lastChild).toBe(true);
-  });
-
-  it("maps states to rings", () => {
-    expect(treeRingTone("input")).toBe("blocked");
-    expect(treeRingTone("failed")).toBeNull();
   });
 });
