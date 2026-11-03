@@ -35,5 +35,11 @@ describe("orderThreadsAsTree", () => {
     // A grandchild's row carries on the line to its parent's next sibling.
     expect(lineAtDepthOne("g")).toBe(true);
     expect(lineAtDepthOne("c2")).toBe(false);
+    // A row with children sends a line down out of its dot; a childless one does not.
+    const lineBelow = (id: string) => {
+      const place = placed.find((p) => p.thread.id === id)!;
+      return treeLineContinues(place.lines, place.depth + 1);
+    };
+    expect(["a", "c1", "g", "c2"].map(lineBelow)).toEqual([true, true, false, false]);
   });
 });

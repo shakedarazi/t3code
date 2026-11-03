@@ -39,8 +39,9 @@ export function orderThreadsAsTree<T extends TreeThread>(
       if (seen.has(key)) return;
       seen.add(key);
       const lines = index === list.length - 1 ? inherited : inherited | (1 << depth);
-      out.push({ thread, depth, lines });
-      walk(children.get(key) ?? [], depth + 1, lines);
+      const below = children.get(key) ?? [];
+      out.push({ thread, depth, lines: below.length > 0 ? lines | (1 << (depth + 1)) : lines });
+      walk(below, depth + 1, lines);
     });
   };
   walk(roots, 0, 0);

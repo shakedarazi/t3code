@@ -1204,6 +1204,8 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: SidebarThreadRowP
           "list-none [content-visibility:auto] [contain-intrinsic-size:auto_--spacing(9)]",
           metaLine !== null && multiline && "[contain-intrinsic-size:auto_--spacing(13.5)]",
           sortable?.isDragging && "relative z-20",
+          // Closes the list's 1px gap: the row clips the tree lines, so they cannot bridge it.
+          props.treeDepth !== undefined && "-mb-px",
         )}
       >
         <Tooltip disabled={sortable?.isDragging}>
