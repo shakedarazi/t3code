@@ -1238,13 +1238,7 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: SidebarThreadRowP
               />
             }
           >
-            {inFolder && props.treePlace ? (
-              <SidebarThreadTreeMark
-                {...props.treePlace}
-                environmentId={thread.environmentId}
-                threadId={thread.id}
-              />
-            ) : null}
+            {inFolder && props.treePlace ? <SidebarThreadTreeMark {...props.treePlace} /> : null}
             {/* `contents` keeps one-line rows a single flex row. */}
             <div className={multiline ? "flex h-6 min-w-0 items-center gap-2.5" : "contents"}>
               {accessibleTitle}
