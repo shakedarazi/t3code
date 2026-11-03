@@ -12,7 +12,7 @@ export function treeTitleInset(depth: number) {
   return 36 + depth * TREE_INDENT_PX;
 }
 
-/** Grey lines through the row, up to the parent and down to children, and a dot, in the left gutter. */
+/** Grey lines through the row, up to the parent and down to children, and a mark, in the left gutter. */
 export function SidebarThreadTreeMark(props: { depth: number; lines: number }) {
   const { depth, lines } = props;
   const dotPx = depth === 0 ? ROOT_DOT_PX : DOT_PX;
@@ -44,13 +44,18 @@ export function SidebarThreadTreeMark(props: { depth: number; lines: number }) {
         </>
       ) : null}
       {treeLineContinues(lines, depth + 1) ? (
+        // Starts below the mark, so a hollow root stays empty on any row background.
         <span
-          className="absolute top-1/2 bottom-0 w-0.5 bg-foreground/20"
-          style={{ insetInlineStart: lineX(depth + 1) }}
+          className="absolute bottom-0 w-0.5 bg-foreground/20"
+          style={{ insetInlineStart: lineX(depth + 1), top: `calc(50% + ${dotPx / 2}px)` }}
         />
       ) : null}
       <span
-        className="absolute top-1/2 -translate-y-1/2 rounded-full bg-foreground"
+        className={
+          depth === 0
+            ? "absolute top-1/2 -translate-y-1/2 rounded-sm border-2 border-foreground/60"
+            : "absolute top-1/2 -translate-y-1/2 rounded-xs bg-foreground/60"
+        }
         style={{
           insetInlineStart: dotX(depth) + (DOT_PX - dotPx) / 2,
           width: dotPx,

@@ -1019,12 +1019,12 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: SidebarThreadRowP
       aria-hidden
       className={cn(
         "min-w-0 flex-1 text-start text-sm transition-opacity motion-reduce:transition-none",
-        shouldRecede ? "font-normal" : "font-medium",
+        shouldRecede && variant === "slim" ? "font-normal" : "font-medium",
         variant !== "slim"
           ? cn(
               "truncate",
               shouldRecede
-                ? "text-foreground/75 group-hover/sidebar-row:text-foreground group-focus-visible/sidebar-row:text-foreground"
+                ? "text-foreground/90 group-hover/sidebar-row:text-foreground group-focus-visible/sidebar-row:text-foreground"
                 : status === "failed" && !isUnread && !isWoke
                   ? "text-foreground/95"
                   : "text-foreground",
