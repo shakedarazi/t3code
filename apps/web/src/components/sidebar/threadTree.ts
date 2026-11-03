@@ -1,6 +1,6 @@
 import type { SidebarThreadSummary } from "../../types";
 
-export const TREE_INDENT_PX = 12;
+export const TREE_INDENT_PX = 19;
 
 type TreeThread = Pick<SidebarThreadSummary, "id" | "environmentId" | "lineage">;
 
