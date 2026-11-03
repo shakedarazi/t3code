@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vite-plus/test";
 
-import { orderThreadsAsTree } from "./threadTree";
+import { orderThreadsAsTree, treeLineContinues } from "./threadTree";
 
 const t = (id: string, parentThreadId: string | null) =>
   ({ id, environmentId: "e", lineage: { parentThreadId } }) as never as Parameters<
@@ -14,6 +14,7 @@ describe("orderThreadsAsTree", () => {
       t("b", null),
       t("a", null),
       t("g", "c1"),
+      t("c2", "a"),
       t("o", "gone"),
       t("x", "y"),
       t("y", "x"),
@@ -23,10 +24,16 @@ describe("orderThreadsAsTree", () => {
       "a:0",
       "c1:1",
       "g:2",
+      "c2:1",
       "o:0",
       "x:0",
       "y:0",
     ]);
-    expect(placed.find((p) => p.thread.id === "c1")?.lastChild).toBe(true);
+    const lineAtDepthOne = (id: string) =>
+      treeLineContinues(placed.find((p) => p.thread.id === id)!.lines, 1);
+    expect(lineAtDepthOne("c1")).toBe(true);
+    // A grandchild's row carries on the line to its parent's next sibling.
+    expect(lineAtDepthOne("g")).toBe(true);
+    expect(lineAtDepthOne("c2")).toBe(false);
   });
 });

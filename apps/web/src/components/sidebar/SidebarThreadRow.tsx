@@ -538,7 +538,8 @@ type SidebarThreadRowProps = {
   // "folder" is a one-line row inside a boring sidebar project folder;
   // "folder-multiline" adds the card's branch and PR line under it.
   variant: "card" | "slim" | "folder" | "folder-multiline";
-  treePlace?: { depth: number; lastChild: boolean } | undefined;
+  treeDepth?: number | undefined;
+  treeLines?: number | undefined;
   navigationParent?: string | undefined;
   variantAction: SidebarSweepAction;
   settlementSupported: boolean;
@@ -1224,12 +1225,12 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: SidebarThreadRowP
                     ? "flex flex-col justify-center px-2.5 py-1.5"
                     : "flex h-9 items-center gap-2.5 px-2.5",
                   // Lines titles up with the folder name, past its chevron and icon.
-                  inFolder && !props.treePlace && "ps-9",
+                  inFolder && "ps-9",
                 )}
                 style={
-                  inFolder && props.treePlace
-                    ? { paddingInlineStart: treeTitleInset(props.treePlace.depth) }
-                    : undefined
+                  props.treeDepth === undefined
+                    ? undefined
+                    : { paddingInlineStart: treeTitleInset(props.treeDepth) }
                 }
                 onClick={handleClick}
                 onDoubleClick={handleDoubleClick}
@@ -1238,7 +1239,9 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: SidebarThreadRowP
               />
             }
           >
-            {inFolder && props.treePlace ? <SidebarThreadTreeMark {...props.treePlace} /> : null}
+            {props.treeDepth === undefined ? null : (
+              <SidebarThreadTreeMark depth={props.treeDepth} lines={props.treeLines ?? 0} />
+            )}
             {/* `contents` keeps one-line rows a single flex row. */}
             <div className={multiline ? "flex h-6 min-w-0 items-center gap-2.5" : "contents"}>
               {accessibleTitle}

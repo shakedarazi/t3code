@@ -103,7 +103,7 @@ export interface ThreadLaunchInput {
   readonly linkOrigin?: OrchestrationV2LinkOrigin;
   /** The parent there, when that environment's agent delegated this as a task. */
   readonly delegatedFrom?: OrchestrationV2DelegatedFrom;
-  /** The thread whose agent launched this one; falls back to the opening message's sender. */
+  /** The thread whose agent launched this one. */
   readonly launchedFrom?: ThreadId;
 }
 
@@ -924,7 +924,6 @@ const make = Effect.gen(function* () {
         const initialBranch = workspaceStrategy.branch ?? null;
         const initialWorktreePath =
           workspaceStrategy.type === "existing_worktree" ? workspaceStrategy.worktreePath : null;
-        const launchedFrom = input.launchedFrom ?? input.initialMessage?.senderThreadId;
         const claimDispatch =
           input.reuseExistingThread === true
             ? threads.dispatch({
@@ -951,7 +950,7 @@ const make = Effect.gen(function* () {
                 ...(input.delegatedFrom === undefined
                   ? {}
                   : { delegatedFrom: input.delegatedFrom }),
-                ...(launchedFrom === undefined ? {} : { launchedFrom }),
+                ...(input.launchedFrom === undefined ? {} : { launchedFrom: input.launchedFrom }),
                 createdBy: input.createdBy,
                 creationSource: input.creationSource,
               });
