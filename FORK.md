@@ -17,6 +17,8 @@ fork אישי של [T3 Code](https://github.com/pingdotgg/t3code). המטרה: �
 | `fork:`  | עץ בתצוגת התיקיות של הסיידבר: הזחה לפי עומק, קו אפור לאב וסימן (`components/sidebar/threadTree.ts`, `SidebarThreadTreeMark.tsx`). subagents מוצגים ב-Lineage, לא כאן.                                                         | כש-upstream יצייר עץ בסיידבר.                         |
 | `fork:`  | דף `html_render` שולח את הטקסט של האדם לשיחה ב-`ui/message`, כמו MCP App, רק מלחיצה (`HtmlRenderFrame.tsx`, `BrowserDocumentFrame.tsx`, `packages/shared/src/htmlRender.ts`).                                                 | כש-upstream ירשה לדף `html_render` לשלוח הודעה לשיחה. |
 
+| `fork:` | `/clear` מתחיל סשן חדש באותה שיחה: העתק של [#30323](https://github.com/pingdotgg/t3code/pull/30323) ו-[#30325](https://github.com/pingdotgg/t3code/pull/30325) של upstream, ב-`5a80b42`. | כששני ה-PRs ימוזגו: מורידים את הקומיט לפני `fork/update.sh`. |
+
 ארבעת הקומיטים שהיו בשביל החלונית של session-tree (Settings סוגר את הסיידבר, מצב הסיידבר ורוחבו, `t3code://new?project=`) הוסרו; הם שמורים בתג `panel-patches-archive`.
 
 הקבצים של ה-fork עצמו יושבים ב-`fork/` וב-`FORK.md`, נתיבים ש-upstream לא נוגע בהם.
