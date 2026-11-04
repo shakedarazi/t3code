@@ -19,6 +19,14 @@ fork אישי של [T3 Code](https://github.com/pingdotgg/t3code). המטרה: �
 
 | `fork:` | `/clear` מתחיל סשן חדש באותה שיחה: העתק של [#30323](https://github.com/pingdotgg/t3code/pull/30323) ו-[#30325](https://github.com/pingdotgg/t3code/pull/30325) של upstream, ב-`5a80b42`. | כששני ה-PRs ימוזגו: מורידים את הקומיט לפני `fork/update.sh`. |
 
+## מחכים ל-upstream
+
+מה ש-`/upstream-check` בודק בכל ריצה. כשה-PR מוזג, מורידים את הקומיט לפני `fork/update.sh` ומוחקים את השורה.
+
+| PR                                                                                                                 | מה הוא פותר                  | הקומיט שלנו שיורד                     |
+| ------------------------------------------------------------------------------------------------------------------ | ---------------------------- | ------------------------------------- |
+| [#30323](https://github.com/pingdotgg/t3code/pull/30323), [#30325](https://github.com/pingdotgg/t3code/pull/30325) | `/clear` בסשן חדש באותה שיחה | `fork: /clear starts a fresh session` |
+
 ארבעת הקומיטים שהיו בשביל החלונית של session-tree (Settings סוגר את הסיידבר, מצב הסיידבר ורוחבו, `t3code://new?project=`) הוסרו; הם שמורים בתג `panel-patches-archive`.
 
 הקבצים של ה-fork עצמו יושבים ב-`fork/` וב-`FORK.md`, נתיבים ש-upstream לא נוגע בהם.
