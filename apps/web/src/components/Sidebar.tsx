@@ -260,6 +260,7 @@ import {
   type SidebarProviderEntry,
   type SidebarSweepAction,
 } from "./sidebar/SidebarThreadRow";
+import { orderThreadsAsTree } from "./sidebar/threadTree";
 import { SidebarDraftBlock } from "./sidebar/SidebarDraftBlock";
 import {
   SidebarProjectFolderHeader,
@@ -527,13 +528,15 @@ function useSidebarThreads(input: {
             projectExpandedById,
             sidebarFolderExpansionKeys(folder.group),
           );
+          // A closed folder still shows the open thread, and hints at the rest.
+          const placed = orderThreadsAsTree(
+            collapsed ? routeThreadOnly(folder.threads, routeRowThreadKey) : folder.threads,
+          );
           return {
             group: folder.group,
             collapsed,
-            // A closed folder still shows the open thread, and hints at the rest.
-            threads: collapsed
-              ? routeThreadOnly(folder.threads, routeRowThreadKey)
-              : folder.threads,
+            placed,
+            threads: placed.map((place) => place.thread),
             hiddenThreads: collapsed
               ? folder.threads.filter((thread) => threadShellKey(thread) !== routeRowThreadKey)
               : EMPTY_THREADS,
@@ -3305,6 +3308,8 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
                         section: SidebarSection,
                         // The tree row of the project folder this row sits in.
                         folderRow?: string,
+                        treeDepth?: number,
+                        treeLines?: number,
                       ) => {
                         const threadKey = scopedThreadKey(
                           scopeThreadRef(thread.environmentId, thread.id),
@@ -3330,6 +3335,8 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
                               optimisticDrop !== null
                             }
                             thread={thread}
+                            treeDepth={treeDepth}
+                            treeLines={treeLines}
                             variant={rowVariant}
                             navigationParent={
                               folderRow ??
@@ -3452,12 +3459,14 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
                                 onContextMenu={handleProjectFolderContextMenu}
                               />,
                             );
-                            for (const thread of folder.threads) {
+                            for (const { thread, depth, lines } of folder.placed) {
                               items.push(
                                 renderThreadRow(
                                   thread,
                                   "active",
                                   sidebarFolderRowId(folder.group.projectKey),
+                                  depth,
+                                  lines,
                                 ),
                               );
                             }
