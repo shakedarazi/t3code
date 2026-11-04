@@ -23,17 +23,6 @@ if [[ -n $(git status --porcelain --untracked-files=no) ]]; then
 fi
 
 if ! $checks_only; then
-  # git will not replay a fork commit over an untracked file it adds, and keeps rescheduling it.
-  blocking=$(comm -12 \
-    <(git log --format= --name-only --diff-filter=A upstream/main.."$branch" | sort -u) \
-    <(git ls-files --others --exclude-standard | sort))
-  if [[ -n $blocking ]]; then
-    echo "fork commits add these untracked files, and the rebase cannot pass them:" >&2
-    echo "$blocking" >&2
-    echo "move them out of the repo, run fork/update.sh, then move them back" >&2
-    exit 1
-  fi
-
   git config rerere.enabled true
   git config rerere.autoupdate true
 
@@ -54,7 +43,7 @@ if ! $checks_only; then
         echo "or give up: git rebase --abort (shaked stays at shaked-before-update)" >&2
         exit 1
       fi
-      # The same spot twice means git refused the step (a hook, say); retrying never ends.
+      # The same spot twice means git refused the step (a hook, an untracked file); retrying never ends.
       spot="$(git rev-parse HEAD) $(sed -n 1p .git/rebase-merge/git-rebase-todo)"
       if [[ $spot == "${last_spot:-}" ]]; then
         echo "rebase is stuck at: $(git --no-pager status | sed -n 2,4p)" >&2
