@@ -54,6 +54,12 @@ fork/build.sh
 
 דרוש: `cargo`, `cc`, `make`, `node`. `pnpm` — אם אינו מותקן, הסקריפטים מריצים את הגרסה המוצמדת ב-`package.json` דרך `npx`.
 
+## צורת העבודה
+
+המונחים (יחידת עבודה, גזע, עותק, מיזוג) וההחלטות יושבים ב-lossless: `content/modules/steering/model/GLOSSARY.md`, הסעיף
+"צורת העבודה" ב-`content/modules/steering/module.md`, ו-`content/modules/steering/model/docs/adr/0016-merge-on-github.md`.
+הקובץ הזה לא מגדיר אותם.
+
 ## מה T3 נותן
 
 מה ש-session-tree (`~/Developer/session-tree`) נשען עליו, כמו שנבדק בקוד. בכל שאלה על יכולת: קודם התיעוד העדכני
@@ -74,8 +80,8 @@ fork/build.sh
   (`branch.<b>.gh-merge-base`), וזה ענף ההורה. הערה על שורה נשלחת לסוכן.
 - **PR:** רשימה ב-`/pull-requests`; לסוכן `link_pull_request`, ‏`watch_pull_request`, ‏`write_pull_request_guides`.
   מיזוג של PR סוגר את השיחה (`ThreadSettlementService.ts`).
-- **שיחה שמתארכת:** ב-T3 "שיחה חדשה" של `/handoff` ו-`/switch` היא `/clear` באותה שיחה, ואז הפקודה של הסקיל. השיחה, הילדים
-  וה-Lineage נשארים. הסקילים לא יודעים מזה.
+- **שיחה שמתארכת:** הכלי של T3 שמשמש את `/handoff` הוא `t3_thread_send` עם `freshContext: true` לשיחה של עצמה: ההודעה נכנסת
+  לתור, ומתחילה סשן נקי כשהתור נגמר. בלי הכלי: `/clear` ואז הפקודה. השיחה, הילדים וה-Lineage נשארים.
 - **שיחה שסוכן פותח** (`create_threads` ב-MCP של T3) נרשמת עם השיחה שפתחה אותה, ו-session-tree שם אותה כילד שלה.
 - **המצב על הדיסק:** `~/.t3/userdata/statev2.sqlite`. לקריאה בלבד מבחוץ.
 - **Settled מבחוץ** (ב-fork): `~/.t3/bin/t3 thread settle <thread>`, אותה פקודה של השרת שה-Settled בסיידבר ו-
