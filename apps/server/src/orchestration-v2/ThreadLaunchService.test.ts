@@ -300,6 +300,7 @@ function launchInput(input: {
   readonly command: string;
   readonly thread: string;
   readonly message?: string;
+  readonly sender?: ThreadId;
   readonly workspace?: ThreadLaunch.ThreadLaunchWorkspaceStrategy;
 }) {
   return {
@@ -317,6 +318,7 @@ function launchInput(input: {
           initialMessage: {
             messageId: MessageId.make(`${input.message}:id`),
             text: input.message,
+            ...(input.sender === undefined ? {} : { senderThreadId: input.sender }),
             attachments: [],
           },
         }),
@@ -546,6 +548,32 @@ it.effect("retains automation and sender attribution while a message waits in th
     });
     assert.equal(fresh.delivery, "queued");
     assert.isTrue(fresh.run.freshContext);
+  }).pipe(Effect.provide(harness.layer));
+});
+
+it.effect("records the launching thread as the parent, leaving the relationship unset", () => {
+  const harness = makeHarness();
+  return Effect.gen(function* () {
+    const launches = yield* ThreadLaunch.ThreadLaunchService;
+    const threads = yield* ThreadManagement.ThreadManagementService;
+    const sender = ThreadId.make("thread:launcher");
+    const byAgent = yield* launches.launch({
+      ...launchInput({ command: "command:parent:a", thread: "thread:parent:a" }),
+      launchedFrom: sender,
+    });
+    const byPerson = yield* launches.launch(
+      launchInput({ command: "command:parent:b", thread: "thread:parent:b", message: "go" }),
+    );
+    const agentLineage = (yield* threads.getThreadProjection(byAgent.threadId)).thread.lineage;
+    const personLineage = (yield* threads.getThreadProjection(byPerson.threadId)).thread.lineage;
+    assert.deepEqual(
+      [agentLineage.parentThreadId, agentLineage.relationshipToParent],
+      [sender, null],
+    );
+    assert.deepEqual(
+      [personLineage.parentThreadId, personLineage.relationshipToParent],
+      [null, null],
+    );
   }).pipe(Effect.provide(harness.layer));
 });
 
