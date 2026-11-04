@@ -4,6 +4,7 @@ import {
   injectHtmlRenderBootstrap,
   readHtmlRenderImageRequest,
   readHtmlRenderLinkRequest,
+  readHtmlRenderMessageRequest,
 } from "./htmlRender.ts";
 import { htmlRenderFromToolItem } from "./toolOutput.ts";
 
@@ -130,5 +131,46 @@ describe("htmlRenderFromToolItem", () => {
     ] as const) {
       expect(htmlRenderFromToolItem({ toolName, output })).toEqual(reference);
     }
+  });
+});
+
+// fork: the pad board's Send, as MCP Apps send a message.
+describe("readHtmlRenderMessageRequest", () => {
+  const msg = (params: unknown, id: unknown = 1) => ({
+    jsonrpc: "2.0",
+    id,
+    method: "ui/message",
+    params,
+  });
+  it("reads the user's text blocks", () => {
+    expect(
+      readHtmlRenderMessageRequest(
+        msg({
+          role: "user",
+          content: [
+            { type: "text", text: " a " },
+            { type: "text", text: "b" },
+          ],
+        }),
+      ),
+    ).toEqual({ id: 1, text: "a \nb" });
+  });
+  it("refuses another role, other blocks, empty text, or no id", () => {
+    expect(
+      readHtmlRenderMessageRequest(
+        msg({ role: "assistant", content: [{ type: "text", text: "a" }] }),
+      ),
+    ).toBeUndefined();
+    expect(
+      readHtmlRenderMessageRequest(msg({ role: "user", content: [{ type: "image", data: "x" }] })),
+    ).toBeUndefined();
+    expect(
+      readHtmlRenderMessageRequest(msg({ role: "user", content: [{ type: "text", text: "  " }] })),
+    ).toBeUndefined();
+    expect(
+      readHtmlRenderMessageRequest(
+        msg({ role: "user", content: [{ type: "text", text: "a" }] }, null),
+      ),
+    ).toBeUndefined();
   });
 });
