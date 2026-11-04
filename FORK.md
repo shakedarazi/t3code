@@ -11,8 +11,6 @@ fork אישי של [T3 Code](https://github.com/pingdotgg/t3code). המטרה: �
 | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
 | `build:` | `fork/build.sh` — בנייה מקומית של DMG ל-arm64.                                                                                                                                                                                | לא.                                                          |
 | `fork:`  | `fork/update.sh`, הקובץ הזה, ושורה בראש `AGENTS.md`.                                                                                                                                                                          | לא.                                                          |
-| `fork:`  | `t3 thread settle <thread>` ב-`apps/server/src/cli/thread.ts` — Settled מבחוץ, ל-session-tree.                                                                                                                                | כש-upstream יוסיף פקודה כזו.                                 |
-| `fork:`  | `shownAt` על השיחה: כל הצגה של שיחה (`threadShown.ts`) היא `thread.visit` עם `shown`, ל-session-tree.                                                                                                                         | כש-upstream יפלוט את השיחה המוצגת.                           |
 | `fork:`  | שיחה שסוכן פותח (`t3_thread_launch`, `create_threads`) נרשמת עם השיחה שפתחה אותה ב-`lineage.parentThreadId` (`launchedFrom` ב-`thread.create`; `ThreadLaunchService.ts`, `Orchestrator.ts`), `relationshipToParent` נשאר ריק. | כש-upstream ירשום אבא לשיחה שנפתחה ב-launch.                 |
 | `fork:`  | עץ בתצוגת התיקיות של הסיידבר: הזחה לפי עומק, קו אפור לאב וסימן (`components/sidebar/threadTree.ts`, `SidebarThreadTreeMark.tsx`). subagents מוצגים ב-Lineage, לא כאן.                                                         | כש-upstream יצייר עץ בסיידבר.                                |
 | `fork:`  | דף `html_render` שולח את הטקסט של האדם לשיחה ב-`ui/message`, כמו MCP App, רק מלחיצה (`HtmlRenderFrame.tsx`, `BrowserDocumentFrame.tsx`, `packages/shared/src/htmlRender.ts`).                                                 | כש-upstream ירשה לדף `html_render` לשלוח הודעה לשיחה.        |
@@ -62,7 +60,7 @@ fork/build.sh
 
 ## מה T3 נותן
 
-מה ש-session-tree (`~/Developer/session-tree`) נשען עליו, כמו שנבדק בקוד. בכל שאלה על יכולת: קודם התיעוד העדכני
+מה שהעבודה נשענת עליו ב-T3, כמו שנבדק בקוד. בכל שאלה על יכולת: קודם התיעוד העדכני
 (`AGENTS.md`), ואז לעדכן כאן.
 
 - **הרשאות:** `~/.t3/bin/t3 auth session issue --scope <scope> --ttl <זמן> --token-only`. שקד מנפיק, בטרמינל שלו, לא
@@ -82,10 +80,7 @@ fork/build.sh
   מיזוג של PR סוגר את השיחה (`ThreadSettlementService.ts`).
 - **שיחה שמתארכת:** הכלי של T3 שמשמש את `/handoff` הוא `t3_thread_send` עם `freshContext: true` לשיחה של עצמה: ההודעה נכנסת
   לתור, ומתחילה סשן נקי כשהתור נגמר. בלי הכלי: `/clear` ואז הפקודה. השיחה, הילדים וה-Lineage נשארים.
-- **שיחה שסוכן פותח** (`create_threads` ב-MCP של T3) נרשמת עם השיחה שפתחה אותה, ו-session-tree שם אותה כילד שלה.
+- **שיחה שסוכן פותח** (`t3_thread_launch`, `create_threads`; ב-fork) נרשמת עם השיחה שפתחה אותה, ומופיעה מתחתיה בעץ
+  בסיידבר.
+- **פתיחת ילד מהממשק:** אין ב-T3 פעולה כזו. `/lineage` שולח את הבקשה דרך הסוכן של ההורה, עם המודל והריתמה שנבחרו.
 - **המצב על הדיסק:** `~/.t3/userdata/statev2.sqlite`. לקריאה בלבד מבחוץ.
-- **Settled מבחוץ** (ב-fork): `~/.t3/bin/t3 thread settle <thread>`, אותה פקודה של השרת שה-Settled בסיידבר ו-
-  `t3_thread_organize` מפעילים. מדפיס `Settled.`; כישלון: שורה ב-stderr ויציאה 1.
-- **השיחה ש-T3 מציג** (ב-fork): ‏`shownAt` על ה-shell של השיחה, בשעון השרת, בכל הצגה שלה (התראה, סיידבר, קישור),
-  גם של שיחה שכבר נקראה. ה-`shownAt` החדש מכולם הוא השיחה המוצגת. הצגה לא מזיזה את סימן הקריאה (`lastVisitedAt`): שיחה
-  שלא נקראה נשארת לא נקראה. בלי visit tracking אין גם `shownAt`.

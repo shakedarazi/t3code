@@ -4,7 +4,6 @@ import {
   OrchestratorMcpThreadReadResult,
   OrchestratorMcpThreadSendResult,
   OrchestratorMcpThreadWaitResult,
-  OrchestrationV2DispatchCommandResult,
   ProjectId,
   RunId,
   ThreadId,
@@ -509,18 +508,6 @@ const finishRun = Effect.fn("cli.thread.finishRun")(function* (
   }
 });
 
-/**
- * The server's settle, the same one the sidebar's Settled and
- * `t3_thread_organize` dispatch. The CLI is never the thread's own agent, so
- * it settles at once rather than at turn end.
- */
-export const settleThread = (tools: ThreadTools, threadId: ThreadId) =>
-  tools.call(
-    "t3_thread_organize",
-    { threadId, action: "settle" },
-    OrchestrationV2DispatchCommandResult,
-  );
-
 export const titleFromMessage = (message: string) => {
   const firstLine = message.trim().split("\n")[0]?.trim() ?? "";
   if (firstLine.length <= TITLE_MAX_CHARS) return firstLine;
@@ -775,33 +762,12 @@ const threadShowCommand = Command.make("show", {
   ),
 );
 
-const threadSettleCommand = Command.make("settle", {
-  ...projectLocationFlags,
-  thread: threadArgument,
-  json: jsonFlag,
-}).pipe(
-  Command.withDescription("Settle a thread, as Settled in the sidebar does."),
-  Command.withHandler((flags) =>
-    Effect.gen(function* () {
-      const threadId = yield* decodeThreadId(flags.thread);
-      yield* withThreadTools(
-        flags,
-        Effect.fn("cli.thread.settle")(function* (tools) {
-          const settled = yield* settleThread(tools, threadId);
-          yield* flags.json ? printJson({ threadId, ...settled }) : Console.log("Settled.");
-        }),
-      );
-    }).pipe(reportThreadErrors),
-  ),
-);
-
 export const threadCommand = Command.make("thread").pipe(
-  Command.withDescription("Start, message, read, and settle threads on the running server."),
+  Command.withDescription("Start, message, and read threads on the running server."),
   Command.withSubcommands([
     threadListCommand,
     threadStartCommand,
     threadSendCommand,
     threadShowCommand,
-    threadSettleCommand,
   ]),
 );
