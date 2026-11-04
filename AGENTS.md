@@ -1,4 +1,4 @@
-> **ה-fork של שקד.** קודם `FORK.md`: מה שונה מ-upstream, איך מעדכנים ובונים, ומה T3 נותן ל-session-tree.
+> **ה-fork של שקד.** קודם `FORK.md`: מה שונה מ-upstream, איך מעדכנים ובונים, ועל מה העבודה נשענת ב-T3.
 >
 > **בכל שאלה על מה T3 יודע לעשות:** קודם התיעוד העדכני. `git fetch upstream`, ואז `docs/README.md` ו-`docs/user/`
 > כמו שהם ב-`upstream/main` (`git show upstream/main:docs/README.md`). רק אחריו הקוד. upstream זז מהר, והעותק המקומי
