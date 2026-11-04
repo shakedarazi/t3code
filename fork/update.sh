@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Bring the fork up to date with upstream:
 #   fetch upstream, move main to upstream/main, rebase shaked onto it,
-#   then typecheck and unit-test apps/web.
+#   then run CI's fast checks on everything the fork changes.
 # Stops on a conflict that rerere cannot resolve, or on a failed check.
 # The pre-update tip is kept as the tag shaked-before-update.
 set -euo pipefail
@@ -23,6 +23,17 @@ if [[ -n $(git status --porcelain --untracked-files=no) ]]; then
 fi
 
 if ! $checks_only; then
+  # git will not replay a fork commit over an untracked file it adds, and keeps rescheduling it.
+  blocking=$(comm -12 \
+    <(git log --format= --name-only --diff-filter=A upstream/main.."$branch" | sort -u) \
+    <(git ls-files --others --exclude-standard | sort))
+  if [[ -n $blocking ]]; then
+    echo "fork commits add these untracked files, and the rebase cannot pass them:" >&2
+    echo "$blocking" >&2
+    echo "move them out of the repo, run fork/update.sh, then move them back" >&2
+    exit 1
+  fi
+
   git config rerere.enabled true
   git config rerere.autoupdate true
 
@@ -43,6 +54,14 @@ if ! $checks_only; then
         echo "or give up: git rebase --abort (shaked stays at shaked-before-update)" >&2
         exit 1
       fi
+      # The same spot twice means git refused the step (a hook, say); retrying never ends.
+      spot="$(git rev-parse HEAD) $(sed -n 1p .git/rebase-merge/git-rebase-todo)"
+      if [[ $spot == "${last_spot:-}" ]]; then
+        echo "rebase is stuck at: $(git --no-pager status | sed -n 2,4p)" >&2
+        echo "fix it and 'git rebase --continue', or give up: git rebase --abort" >&2
+        exit 1
+      fi
+      last_spot=$spot
       git add -u
       if git diff --cached --quiet; then
         # The commit became empty: upstream already has it. Drop it.
@@ -57,7 +76,7 @@ fi
 git --no-pager log --oneline upstream/main.."$branch"
 
 pnpm install --frozen-lockfile
-pnpm exec vp run --filter @t3tools/web typecheck
-pnpm --filter @t3tools/web exec vp test run --project unit
+# macOS's /var is a symlink, and upstream's ServerEnvironment test compares a resolved temp path.
+TMPDIR="$(realpath "${TMPDIR:-/tmp}")/" vp run check:changed upstream/main
 
-echo "up to date. build with fork/build.sh"
+echo "up to date. next: git push --force-with-lease origin $branch, then fork/build.sh"

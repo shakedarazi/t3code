@@ -5,12 +5,12 @@ fork אישי של [T3 Code](https://github.com/pingdotgg/t3code). המטרה: �
 ## מבנה
 
 - `main` — מראה של `upstream/main`. לא עורכים בו.
-- `shaked` — `main` ועוד ערימה קטנה של קומיטים עצמאיים:
+- `shaked` — `main` ועוד ערימת קומיטים. כל שורה בטבלה היא נושא, ולרובם כמה קומיטים:
 
 | קומיט    | מה                                                                                                                                                                                                                            | מתי להוריד                                                   |
 | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
 | `build:` | `fork/build.sh` — בנייה מקומית של DMG ל-arm64.                                                                                                                                                                                | לא.                                                          |
-| `fork:`  | `fork/update.sh`, הקובץ הזה, ושורה בראש `AGENTS.md`.                                                                                                                                                                          | לא.                                                          |
+| `fork:`  | `fork/update.sh`, הקובץ הזה, ופתיח בראש `AGENTS.md`.                                                                                                                                                                          | לא.                                                          |
 | `fork:`  | שיחה שסוכן פותח (`t3_thread_launch`, `create_threads`) נרשמת עם השיחה שפתחה אותה ב-`lineage.parentThreadId` (`launchedFrom` ב-`thread.create`; `ThreadLaunchService.ts`, `Orchestrator.ts`), `relationshipToParent` נשאר ריק. | כש-upstream ירשום אבא לשיחה שנפתחה ב-launch.                 |
 | `fork:`  | עץ בתצוגת התיקיות של הסיידבר: הזחה לפי עומק, קו אפור לאב וסימן (`components/sidebar/threadTree.ts`, `SidebarThreadTreeMark.tsx`). subagents מוצגים ב-Lineage, לא כאן.                                                         | כש-upstream יצייר עץ בסיידבר.                                |
 | `fork:`  | דף `html_render` שולח את הטקסט של האדם לשיחה ב-`ui/message`, כמו MCP App, רק מלחיצה (`HtmlRenderFrame.tsx`, `BrowserDocumentFrame.tsx`, `packages/shared/src/htmlRender.ts`).                                                 | כש-upstream ירשה לדף `html_render` לשלוח הודעה לשיחה.        |
@@ -30,13 +30,17 @@ fork אישי של [T3 Code](https://github.com/pingdotgg/t3code). המטרה: �
 
 ## עדכון מ-upstream
 
-```bash
-fork/update.sh
-```
+1. `/upstream-check`: מה חדש, מה יורד, מה יתנגש. קריאה בלבד.
+2. PR שמוזג: מורידים את הקומיט שלו ואת השורה שלו ב"מחכים ל-upstream".
+3. `fork/update.sh`.
+4. `git push --force-with-lease origin shaked`. ה-rebase כותב את הערימה מחדש, אז זו תמיד דחיפה בכוח. hook חוסם אותה לסוכן, ושקד מריץ.
+5. `fork/build.sh`, ומתקינים את ה-DMG.
 
-מושך את upstream, מזיז את `main`, עושה rebase ל-`shaked` עם `git rerere` (פתרון קונפליקט נזכר ומיושם שוב בפעם הבאה), ומריץ typecheck ובדיקות unit של `apps/web`. נעצר בקונפליקט שאין לו פתרון שמור. הקצה הקודם נשמר בתג `shaked-before-update`.
+`fork/update.sh` מושך את upstream, מזיז את `main`, עושה rebase ל-`shaked` עם `git rerere` (פתרון קונפליקט נזכר ומיושם שוב בפעם הבאה), ומריץ `vp run check:changed upstream/main` על כל מה שה-fork משנה. הקצה הקודם נשמר בתג `shaked-before-update`.
 
-בקונפליקט: פותרים, `git add`, `git rebase --continue`, ואז `fork/update.sh --checks-only`. לוותר: `git rebase --abort`.
+בקונפליקט שאין לו פתרון שמור הוא נעצר: פותרים, `git add`, `git rebase --continue`, ואז `fork/update.sh --checks-only`. לוותר: `git rebase --abort`. ב-`agentContextBudget.json` מוסיפים את התוספת של ה-fork למספרים של upstream.
+
+קובץ לא במעקב שקומיט בערימה מוסיף עוצר אותו לפני שהוא נוגע במשהו (היום: `docs/HANDOFF.md`, ששני קומיטים ישנים מוסיפים ומוחקים). מוציאים אותו מהריפו, מריצים, ומחזירים. לא מוסיפים אותו ל-`.gitignore`: על קובץ מוסתר git דורס בלי לשאול.
 
 קומיט שהתרוקן (upstream כבר מכיל אותו) נזרק אוטומטית.
 
