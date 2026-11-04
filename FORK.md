@@ -7,17 +7,16 @@ fork אישי של [T3 Code](https://github.com/pingdotgg/t3code). המטרה: �
 - `main` — מראה של `upstream/main`. לא עורכים בו.
 - `shaked` — `main` ועוד ערימה קטנה של קומיטים עצמאיים:
 
-| קומיט    | מה                                                                                                                                                                                                                            | מתי להוריד                                            |
-| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
-| `build:` | `fork/build.sh` — בנייה מקומית של DMG ל-arm64.                                                                                                                                                                                | לא.                                                   |
-| `fork:`  | `fork/update.sh`, הקובץ הזה, ושורה בראש `AGENTS.md`.                                                                                                                                                                          | לא.                                                   |
-| `fork:`  | `t3 thread settle <thread>` ב-`apps/server/src/cli/thread.ts` — Settled מבחוץ, ל-session-tree.                                                                                                                                | כש-upstream יוסיף פקודה כזו.                          |
-| `fork:`  | `shownAt` על השיחה: כל הצגה של שיחה (`threadShown.ts`) היא `thread.visit` עם `shown`, ל-session-tree.                                                                                                                         | כש-upstream יפלוט את השיחה המוצגת.                    |
-| `fork:`  | שיחה שסוכן פותח (`t3_thread_launch`, `create_threads`) נרשמת עם השיחה שפתחה אותה ב-`lineage.parentThreadId` (`launchedFrom` ב-`thread.create`; `ThreadLaunchService.ts`, `Orchestrator.ts`), `relationshipToParent` נשאר ריק. | כש-upstream ירשום אבא לשיחה שנפתחה ב-launch.          |
-| `fork:`  | עץ בתצוגת התיקיות של הסיידבר: הזחה לפי עומק, קו אפור לאב וסימן (`components/sidebar/threadTree.ts`, `SidebarThreadTreeMark.tsx`). subagents מוצגים ב-Lineage, לא כאן.                                                         | כש-upstream יצייר עץ בסיידבר.                         |
-| `fork:`  | דף `html_render` שולח את הטקסט של האדם לשיחה ב-`ui/message`, כמו MCP App, רק מלחיצה (`HtmlRenderFrame.tsx`, `BrowserDocumentFrame.tsx`, `packages/shared/src/htmlRender.ts`).                                                 | כש-upstream ירשה לדף `html_render` לשלוח הודעה לשיחה. |
-
-| `fork:` | `/clear` מתחיל סשן חדש באותה שיחה: העתק של [#30323](https://github.com/pingdotgg/t3code/pull/30323) ו-[#30325](https://github.com/pingdotgg/t3code/pull/30325) של upstream, ב-`5a80b42`. | כששני ה-PRs ימוזגו: מורידים את הקומיט לפני `fork/update.sh`. |
+| קומיט    | מה                                                                                                                                                                                                                            | מתי להוריד                                                   |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| `build:` | `fork/build.sh` — בנייה מקומית של DMG ל-arm64.                                                                                                                                                                                | לא.                                                          |
+| `fork:`  | `fork/update.sh`, הקובץ הזה, ושורה בראש `AGENTS.md`.                                                                                                                                                                          | לא.                                                          |
+| `fork:`  | `t3 thread settle <thread>` ב-`apps/server/src/cli/thread.ts` — Settled מבחוץ, ל-session-tree.                                                                                                                                | כש-upstream יוסיף פקודה כזו.                                 |
+| `fork:`  | `shownAt` על השיחה: כל הצגה של שיחה (`threadShown.ts`) היא `thread.visit` עם `shown`, ל-session-tree.                                                                                                                         | כש-upstream יפלוט את השיחה המוצגת.                           |
+| `fork:`  | שיחה שסוכן פותח (`t3_thread_launch`, `create_threads`) נרשמת עם השיחה שפתחה אותה ב-`lineage.parentThreadId` (`launchedFrom` ב-`thread.create`; `ThreadLaunchService.ts`, `Orchestrator.ts`), `relationshipToParent` נשאר ריק. | כש-upstream ירשום אבא לשיחה שנפתחה ב-launch.                 |
+| `fork:`  | עץ בתצוגת התיקיות של הסיידבר: הזחה לפי עומק, קו אפור לאב וסימן (`components/sidebar/threadTree.ts`, `SidebarThreadTreeMark.tsx`). subagents מוצגים ב-Lineage, לא כאן.                                                         | כש-upstream יצייר עץ בסיידבר.                                |
+| `fork:`  | דף `html_render` שולח את הטקסט של האדם לשיחה ב-`ui/message`, כמו MCP App, רק מלחיצה (`HtmlRenderFrame.tsx`, `BrowserDocumentFrame.tsx`, `packages/shared/src/htmlRender.ts`).                                                 | כש-upstream ירשה לדף `html_render` לשלוח הודעה לשיחה.        |
+| `fork:`  | `/clear` מתחיל סשן חדש באותה שיחה: העתק של [#30323](https://github.com/pingdotgg/t3code/pull/30323) ו-[#30325](https://github.com/pingdotgg/t3code/pull/30325) של upstream, ב-`5a80b42`.                                      | כששני ה-PRs ימוזגו: מורידים את הקומיט לפני `fork/update.sh`. |
 
 ## מחכים ל-upstream
 
@@ -75,6 +74,8 @@ fork/build.sh
   (`branch.<b>.gh-merge-base`), וזה ענף ההורה. הערה על שורה נשלחת לסוכן.
 - **PR:** רשימה ב-`/pull-requests`; לסוכן `link_pull_request`, ‏`watch_pull_request`, ‏`write_pull_request_guides`.
   מיזוג של PR סוגר את השיחה (`ThreadSettlementService.ts`).
+- **שיחה שמתארכת:** ב-T3 "שיחה חדשה" של `/handoff` ו-`/switch` היא `/clear` באותה שיחה, ואז הפקודה של הסקיל. השיחה, הילדים
+  וה-Lineage נשארים. הסקילים לא יודעים מזה.
 - **שיחה שסוכן פותח** (`create_threads` ב-MCP של T3) נרשמת עם השיחה שפתחה אותה, ו-session-tree שם אותה כילד שלה.
 - **המצב על הדיסק:** `~/.t3/userdata/statev2.sqlite`. לקריאה בלבד מבחוץ.
 - **Settled מבחוץ** (ב-fork): `~/.t3/bin/t3 thread settle <thread>`, אותה פקודה של השרת שה-Settled בסיידבר ו-
